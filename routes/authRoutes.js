@@ -32,10 +32,12 @@ router.get('/google/callback',
       const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET || 'fallback-secret', { expiresIn: '30d' });
       const userId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
       
-      res.redirect(`http://localhost:5173/auth/success?token=${token}&name=${encodeURIComponent(req.user.name)}&email=${encodeURIComponent(req.user.email)}&id=${userId}`);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      res.redirect(`${frontendUrl}/auth/success?token=${token}&name=${encodeURIComponent(req.user.name)}&email=${encodeURIComponent(req.user.email)}&id=${userId}`);
     } catch (error) {
       console.error('OAuth callback error:', error);
-      res.redirect('http://localhost:5173/login?error=oauth_failed');
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      res.redirect(`${frontendUrl}/login?error=oauth_failed`);
     }
   }
 );
